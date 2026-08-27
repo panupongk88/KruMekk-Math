@@ -4,40 +4,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="สื่อการเรียนรู้คณิตศาสตร์ ม.2 เรื่องรากที่สาม - Interactive Math Quiz & Visualizer Application">
-    <title>รากที่สาม - คณิตศาสตร์ ม.2</title>
-
-    <!-- Chosen Palette: Warm Neutral & Modern Indigo -->
-    <!-- Application Structure Plan: The application translates the Grade 8 (ม.2) Cube Root curriculum into an interactive 3-tier SPA layout: 1) Interactive Lesson & Visualizer (Mathematical definitions in LaTeX, properties of positive/negative roots, and a dynamic Chart.js canvas graph of y = root3(x) with interactive slider controls), 2) Solved Examples Studio (Step-by-step worked examples with collapsible solutions), and 3) Adaptive Dynamic Quiz Center (Group and Solo modes supporting variable parameter N, instant result validation, and automated step-by-step solution rendering). This architecture prioritizes conceptual comprehension before algorithmic drill testing. -->
-    <!-- Visualization & Content Choices: 1. LaTeX via MathJax for formula precision. 2. Chart.js on HTML5 Canvas for interactive cubic curve visualizer y = root3(x) (NO SVG). 3. Dynamic Javascript state handlers for input variable N calculation and real-time step solution generator. 4. FontAwesome icons & Tailwind CSS grid/flex layout for responsive design. -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
-
+    <meta name="description" content="สื่อการเรียนรู้คณิตศาสตร์ เรื่อง รากที่สาม (Cube Root) สำหรับนักเรียนชั้นมัธยมศึกษาปีที่ 2">
+    <title>รากที่สาม (Cube Root) - คณิตศาสตร์ ม.2</title>
+    <!-- Favicon -->
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧊</text></svg>">
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts: Prompt for Thai text -->
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Chart.js CDN for Dynamic Graphs -->
+    <!-- Chart.js for Function Visualization -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+    
     <!-- MathJax Configuration & Script -->
     <script>
         window.MathJax = {
             tex: {
-                inlineMath: [['$', '$'], ['\\(', '\\)']],
-                displayMath: [['$$', '$$'], ['\\[', '\\]']],
-                processEscapes: true
+                inlineMath: [['\\(', '\\)']],
+                displayMath: [['$$', '$$']]
             },
             options: {
-                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
             },
             startup: {
                 pageReady: () => {
                     return MathJax.startup.defaultPageReady().then(() => {
-                        if (typeof typesetMath === 'function') {
-                            typesetMath();
-                        }
+                        typesetMath();
                     });
                 }
             }
@@ -54,7 +48,7 @@
 
         body {
             font-family: 'Prompt', sans-serif;
-            background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 50%, #f0f9ff 100%);
+            background: linear-gradient(135deg, #f0f3ff 0%, #eef2ff 50%, #f5f3ff 100%);
             min-height: 100vh;
         }
 
@@ -89,7 +83,7 @@
         @keyframes fadeIn {
             from {
                 opacity: 0;
-                transform: translateY(10px);
+                transform: translateY(8px);
             }
 
             to {
@@ -107,65 +101,102 @@
         }
 
         @keyframes celebrate {
-            0%, 100% { transform: scale(1) rotate(0deg); }
-            25% { transform: scale(1.04) rotate(-2deg); }
-            75% { transform: scale(1.04) rotate(2deg); }
+
+            0%,
+            100% {
+                transform: scale(1) rotate(0deg);
+            }
+
+            25% {
+                transform: scale(1.03) rotate(-2deg);
+            }
+
+            75% {
+                transform: scale(1.03) rotate(2deg);
+            }
         }
 
         @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            20%, 60% { transform: translateX(-6px); }
-            40%, 80% { transform: translateX(6px); }
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            20%,
+            60% {
+                transform: translateX(-6px);
+            }
+
+            40%,
+            80% {
+                transform: translateX(6px);
+            }
         }
 
         @keyframes bounceIn {
-            0% { transform: scale(0.4); opacity: 0; }
-            70% { transform: scale(1.03); }
-            100% { transform: scale(1); opacity: 1; }
+            0% {
+                transform: scale(0.92);
+                opacity: 0;
+            }
+
+            50% {
+                transform: scale(1.02);
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .btn-hitech {
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 10px -2px rgba(99, 102, 241, 0.2);
+        }
+
+        .btn-hitech:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px -4px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-hitech:active {
+            transform: translateY(0);
         }
 
         .glass-panel {
-            background: rgba(255, 255, 255, 0.94);
+            background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(12px);
             border: 1px solid rgba(226, 232, 240, 0.8);
         }
 
-        /* Mandatory Chart Container Styling */
-        .chart-container {
-            position: relative;
-            width: 100%;
-            max-width: 650px;
-            margin-left: auto;
-            margin-right: auto;
-            height: 320px;
-            max-height: 380px;
-        }
-
-        @media (min-width: 768px) {
-            .chart-container {
-                height: 350px;
-            }
-        }
-
-        /* MathJax Adjustments */
+        /* MathJax Adjustments - Responsive */
         mjx-container {
-            font-size: 105% !important;
+            font-size: 100% !important;
             overflow-x: auto;
             overflow-y: hidden;
             max-width: 100%;
+            padding: 2px 0;
         }
 
         @media (min-width: 640px) {
             mjx-container {
-                font-size: 115% !important;
+                font-size: 110% !important;
             }
         }
 
-        /* Touch-friendly interactive buttons */
+        /* Mobile Adjustments */
         @media (max-width: 640px) {
-            button, .btn-hitech {
+            button,
+            .btn-hitech {
                 min-height: 44px;
             }
+        }
+
+        *:focus-visible {
+            outline: 3px solid #6366f1;
+            outline-offset: 2px;
+            border-radius: 6px;
         }
 
         #mobile-menu {
@@ -179,313 +210,278 @@
             max-height: 500px;
             opacity: 1;
         }
-
-        .btn-hitech {
-            transition: all 0.25s ease;
-            box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.15);
-        }
-
-        .btn-hitech:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.25);
-        }
     </style>
 </head>
 
 <body class="text-slate-800 overflow-x-hidden">
 
-    <!-- Top Navigation Bar -->
-    <nav class="bg-white/90 backdrop-blur-md shadow-sm sticky top-0 z-50 border-b border-slate-100">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Navbar -->
+    <nav class="bg-white/90 backdrop-blur-md shadow-sm sticky top-0 z-50 border-b border-indigo-100">
+        <div class="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
             <div class="flex justify-between h-16 items-center">
+                <!-- Logo & Brand -->
                 <div class="flex items-center cursor-pointer" onclick="showSection('home')">
                     <div class="bg-indigo-600 text-white p-2 rounded-xl mr-3 shadow-md">
                         <i class="fa-solid fa-cube text-xl sm:text-2xl"></i>
                     </div>
                     <div class="flex flex-col sm:flex-row sm:items-center sm:gap-2 leading-tight">
-                        <span class="font-bold text-base sm:text-lg md:text-xl text-slate-900 tracking-tight">สื่อการเรียนรู้คณิตศาสตร์</span>
+                        <span class="font-bold text-sm sm:text-lg md:text-xl text-slate-900 tracking-wide">นวัตกรรมการเรียนรู้คณิตศาสตร์</span>
                         <span class="hidden sm:inline text-slate-300">|</span>
-                        <span class="text-xs sm:text-sm md:text-base text-indigo-600 font-semibold">เรื่อง รากที่สาม (ม.2)</span>
+                        <span class="text-xs sm:text-base md:text-lg text-indigo-600 font-semibold">เรื่อง รากที่สาม (ม.2)</span>
                     </div>
                 </div>
 
-                <!-- Desktop Navigation Buttons -->
-                <div class="hidden md:flex items-center space-x-2">
-                    <button onclick="showSection('home')" class="text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 px-3 py-2 rounded-lg text-sm font-medium transition">
-                        <i class="fa-solid fa-house mr-1"></i> หน้าแรก
+                <!-- Desktop Menu -->
+                <div class="hidden sm:flex items-center space-x-3">
+                    <button onclick="showSection('home')"
+                        class="text-slate-600 hover:text-indigo-600 transition px-3.5 py-2 rounded-lg text-sm font-medium hover:bg-indigo-50">
+                        <i class="fa-solid fa-house mr-1.5"></i> หน้าแรก
                     </button>
-                    <button onclick="showSection('learn')" class="text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 px-3 py-2 rounded-lg text-sm font-medium transition">
-                        <i class="fa-solid fa-book-open mr-1"></i> บทเรียน & กราฟ
-                    </button>
-                    <button onclick="setupGroupQuiz()" class="text-slate-600 hover:text-purple-600 hover:bg-purple-50 px-3 py-2 rounded-lg text-sm font-medium transition">
-                        <i class="fa-solid fa-users mr-1"></i> แบบทดสอบกลุ่ม
-                    </button>
-                    <button onclick="setupSoloQuiz()" class="text-slate-600 hover:text-sky-600 hover:bg-sky-50 px-3 py-2 rounded-lg text-sm font-medium transition">
-                        <i class="fa-solid fa-user-graduate mr-1"></i> แบบทดสอบเดี่ยว
+                    <button onclick="showSection('learn')"
+                        class="text-slate-600 hover:text-indigo-600 transition px-3.5 py-2 rounded-lg text-sm font-medium hover:bg-indigo-50">
+                        <i class="fa-solid fa-book-open mr-1.5"></i> บทเรียน
                     </button>
                 </div>
 
                 <!-- Mobile Hamburger Button -->
-                <div class="flex md:hidden">
-                    <button onclick="toggleMobileMenu()" class="text-slate-600 hover:text-indigo-600 p-2 rounded-lg" aria-label="เมนูหลัก">
+                <div class="flex sm:hidden">
+                    <button onclick="toggleMobileMenu()"
+                        class="text-slate-600 hover:text-indigo-600 focus:outline-none p-2" aria-label="เมนูหลัก">
                         <i class="fa-solid fa-bars text-2xl"></i>
                     </button>
                 </div>
             </div>
         </div>
 
-        <!-- Mobile Navigation Menu -->
-        <div id="mobile-menu" class="bg-white border-t border-slate-100 md:hidden">
+        <!-- Mobile Menu Dropdown -->
+        <div id="mobile-menu" class="bg-white border-t border-slate-100 sm:hidden">
             <div class="px-4 py-3 space-y-2">
-                <button onclick="showSection('home'); toggleMobileMenu()" class="block w-full text-left text-slate-700 hover:text-indigo-600 font-medium py-2">
+                <button onclick="showSection('home'); toggleMobileMenu()"
+                    class="block w-full text-left text-slate-700 hover:text-indigo-600 font-medium py-2 border-b border-slate-100">
                     <i class="fa-solid fa-house mr-2 text-indigo-500"></i> หน้าแรก
                 </button>
-                <button onclick="showSection('learn'); toggleMobileMenu()" class="block w-full text-left text-slate-700 hover:text-indigo-600 font-medium py-2">
-                    <i class="fa-solid fa-book-open mr-2 text-indigo-500"></i> บทเรียน & กราฟจำลอง
+                <button onclick="showSection('learn'); toggleMobileMenu()"
+                    class="block w-full text-left text-slate-700 hover:text-indigo-600 font-medium py-2 border-b border-slate-100">
+                    <i class="fa-solid fa-book-open mr-2 text-indigo-500"></i> เรียนรู้เนื้อหา
                 </button>
-                <button onclick="setupGroupQuiz(); toggleMobileMenu()" class="block w-full text-left text-slate-700 hover:text-purple-600 font-medium py-2">
-                    <i class="fa-solid fa-users mr-2 text-purple-500"></i> แบบทดสอบกลุ่ม (4 กลุ่ม)
-                </button>
-                <button onclick="setupSoloQuiz(); toggleMobileMenu()" class="block w-full text-left text-slate-700 hover:text-sky-600 font-medium py-2">
-                    <i class="fa-solid fa-user-graduate mr-2 text-sky-500"></i> แบบทดสอบรายบุคคล
-                </button>
-                <div class="pt-3 border-t border-slate-100 text-xs text-slate-500 space-y-1">
-                    <div><i class="fa-solid fa-book text-indigo-400 mr-1.5"></i>วิชาคณิตศาสตร์พื้นฐาน (ค22101)</div>
-                    <div><i class="fa-solid fa-chalkboard-user text-sky-400 mr-1.5"></i>ครูผู้สอน: ครูภานุพงศ์ แก้วบุญเรือง</div>
+                <!-- Info Section inside Hamburger for Mobile -->
+                <div class="pt-2 text-xs text-slate-500 space-y-2">
+                    <div class="flex items-center">
+                        <i class="fa-solid fa-book-bookmark text-indigo-500 w-5"></i>
+                        <span>วิชาคณิตศาสตร์ ชั้นมัธยมศึกษาปีที่ 2</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fa-solid fa-chalkboard-user text-purple-500 w-5"></i>
+                        <span>ครูผู้สอน: ครูภานุพงศ์ แก้วบุญเรือง</span>
+                    </div>
                 </div>
             </div>
         </div>
     </nav>
 
-    <!-- Sub-header Course Info Banner -->
-    <div class="bg-gradient-to-r from-indigo-900 via-indigo-800 to-slate-900 text-white py-2.5 shadow-inner">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-col sm:flex-row items-center justify-between text-xs sm:text-sm gap-2">
+    <!-- Header Info Bar (Desktop/Tablet Only) -->
+    <div class="hidden sm:block bg-gradient-to-r from-indigo-900 via-indigo-800 to-purple-900 text-white shadow-inner">
+        <div class="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-2.5">
+            <div class="flex flex-row items-center justify-between text-xs sm:text-sm">
                 <div class="flex items-center space-x-2">
-                    <span class="bg-indigo-500/30 text-indigo-200 px-2.5 py-0.5 rounded-full font-medium border border-indigo-400/30">ค22101</span>
-                    <span>บทที่ 2 ความรู้เบื้องต้นเกี่ยวกับจำนวนจริง</span>
+                    <i class="fa-solid fa-graduation-cap text-indigo-300"></i>
+                    <span class="font-medium text-indigo-100">หน่วยการเรียนรู้: จำนวนจริง</span>
+                    <span class="text-indigo-400">|</span>
+                    <span class="text-indigo-200">หัวข้อ: รากที่สาม (Cube Root)</span>
                 </div>
-                <div class="flex items-center space-x-3 text-indigo-200">
-                    <span><i class="fa-solid fa-layer-group text-purple-300 mr-1"></i>ชั้นมัธยมศึกษาปีที่ 2</span>
-                    <span>•</span>
-                    <span><i class="fa-solid fa-chalkboard-user text-sky-300 mr-1"></i>ครูภานุพงศ์ แก้วบุญเรือง</span>
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-user-check text-indigo-300"></i>
+                    <span class="text-indigo-200">ครูผู้สอน:</span>
+                    <span class="font-semibold text-white">ครูภานุพงศ์ แก้วบุญเรือง</span>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Main Container -->
-    <main class="max-w-6xl mx-auto px-4 sm:px-6 py-6 md:py-8">
+    <!-- Main Content Container -->
+    <main class="max-w-6xl mx-auto p-3 sm:p-4 md:p-6 mb-8">
 
         <!-- SECTION: HOME -->
-        <section id="home" class="fade-in min-h-[70vh] flex flex-col items-center justify-center text-center py-4">
-            <div class="glass-panel rounded-3xl p-6 sm:p-10 md:p-14 relative overflow-hidden max-w-4xl w-full border border-slate-200/80 shadow-xl">
-                <div class="absolute top-0 left-0 w-full h-3 bg-gradient-to-r from-indigo-500 via-purple-500 to-sky-500"></div>
+        <section id="home" class="fade-in min-h-[75vh] flex flex-col items-center justify-center text-center py-4 sm:py-6">
+            <div class="bg-white rounded-3xl shadow-xl p-6 sm:p-8 md:p-12 relative overflow-hidden max-w-4xl w-full border border-indigo-100">
+                <div class="absolute top-0 left-0 w-full h-2.5 bg-gradient-to-r from-indigo-500 via-purple-500 to-sky-500"></div>
 
-                <div class="inline-flex items-center gap-2 bg-indigo-50 text-indigo-700 px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-semibold mb-4 border border-indigo-100">
-                    <i class="fa-solid fa-cubes"></i> สื่อการเรียนรู้แบบมีปฏิสัมพันธ์ (Interactive SPA)
+                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-50 text-indigo-700 text-xs sm:text-sm font-semibold mb-4">
+                    <i class="fa-solid fa-square-root-variable"></i> บทเรียนสื่อปฏิสัมพันธ์ Interactive
                 </div>
 
-                <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight mb-4">
-                    รากที่สาม <span class="text-indigo-600 font-normal">(Cube Root)</span>
+                <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 mb-3 tracking-tight">
+                    รากที่สาม (Cube Root)
                 </h1>
-                
-                <p class="text-sm sm:text-base md:text-lg text-slate-600 max-w-2xl mx-auto mb-8 leading-relaxed">
-                    ยินดีต้อนรับสู่ชุดบทเรียนเรขาคณิตและพีชคณิตเรื่องรากที่สาม เรียนรู้บทนิยาม สำรวจกราฟความสัมพันธ์เชิงมิติด้วย Visualizer และฝึกแก้โจทย์ปัญหาแบบสุ่มตัวแปร $N$
+                <p class="text-base sm:text-lg text-slate-600 mb-8 max-w-2xl mx-auto leading-relaxed">
+                    สื่อการเรียนรู้เชิงโต้ตอบวิชาคณิตศาสตร์ ระดับชั้นมัธยมศึกษาปีที่ 2 <br class="hidden sm:inline">
+                    ฝึกฝนทฤษฎี ทำความเข้าใจนิยาม และทดสอบโจทย์ประยุกต์แบบสุ่มตัวเลข
                 </p>
 
-                <!-- Action Cards -->
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6 mb-8 text-left">
-                    <button onclick="showSection('learn')" class="btn-hitech bg-white border border-slate-200 p-5 rounded-2xl flex flex-col items-center text-center hover:border-indigo-500 hover:bg-indigo-50/50 group">
-                        <div class="w-14 h-14 bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center text-2xl mb-3 group-hover:scale-110 transition">
-                            <i class="fa-solid fa-book-open"></i>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mb-8">
+                    <button onclick="showSection('learn')"
+                        class="btn-hitech bg-white border-2 border-indigo-100 p-5 rounded-2xl flex flex-col items-center hover:border-indigo-500 hover:bg-indigo-50/50 active:scale-95 group focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                        <div class="bg-indigo-100 text-indigo-600 w-14 h-14 rounded-2xl flex items-center justify-center text-2xl mb-3 group-hover:bg-indigo-600 group-hover:text-white group-hover:scale-110 transition-all duration-300 shadow-sm">
+                            <i class="fa-solid fa-book-open-reader"></i>
                         </div>
-                        <h3 class="font-bold text-slate-800 text-base mb-1">บทเรียน & กราฟจำลอง</h3>
-                        <p class="text-xs text-slate-500">นิยาม คุณสมบัติ ตัวอย่าง และ กราฟฟังก์ชัน $y = \sqrt[3]{x}$</p>
+                        <h3 class="font-bold text-base text-slate-800">เรียนรู้เนื้อหา</h3>
+                        <p class="text-xs text-slate-500 mt-1">สรุปนิยามและ 6 ตัวอย่างวิธีคิด</p>
                     </button>
 
-                    <button onclick="setupGroupQuiz()" class="btn-hitech bg-white border border-slate-200 p-5 rounded-2xl flex flex-col items-center text-center hover:border-purple-500 hover:bg-purple-50/50 group">
-                        <div class="w-14 h-14 bg-purple-100 text-purple-600 rounded-2xl flex items-center justify-center text-2xl mb-3 group-hover:scale-110 transition">
+                    <button onclick="setupGroupQuiz()"
+                        class="btn-hitech bg-white border-2 border-purple-100 p-5 rounded-2xl flex flex-col items-center hover:border-purple-500 hover:bg-purple-50/50 active:scale-95 group focus:ring-2 focus:ring-purple-500 focus:outline-none">
+                        <div class="bg-purple-100 text-purple-600 w-14 h-14 rounded-2xl flex items-center justify-center text-2xl mb-3 group-hover:bg-purple-600 group-hover:text-white group-hover:scale-110 transition-all duration-300 shadow-sm">
                             <i class="fa-solid fa-users"></i>
                         </div>
-                        <h3 class="font-bold text-slate-800 text-base mb-1">ทดสอบแบบกลุ่ม</h3>
-                        <p class="text-xs text-slate-500">สุ่มสถานการณ์ปัญหา 4 ชุดสำหรับกิจกรรมกลุ่ม</p>
+                        <h3 class="font-bold text-base text-slate-800">ทดสอบแบบกลุ่ม</h3>
+                        <p class="text-xs text-slate-500 mt-1">สุ่มโจทย์ท้าทายสำหรับ 4 กลุ่ม</p>
                     </button>
 
-                    <button onclick="setupSoloQuiz()" class="btn-hitech bg-white border border-slate-200 p-5 rounded-2xl flex flex-col items-center text-center hover:border-sky-500 hover:bg-sky-50/50 group">
-                        <div class="w-14 h-14 bg-sky-100 text-sky-600 rounded-2xl flex items-center justify-center text-2xl mb-3 group-hover:scale-110 transition">
-                            <i class="fa-solid fa-user-graduate"></i>
+                    <button onclick="setupSoloQuiz()"
+                        class="btn-hitech bg-white border-2 border-sky-100 p-5 rounded-2xl flex flex-col items-center hover:border-sky-500 hover:bg-sky-50/50 active:scale-95 group focus:ring-2 focus:ring-sky-500 focus:outline-none">
+                        <div class="bg-sky-100 text-sky-600 w-14 h-14 rounded-2xl flex items-center justify-center text-2xl mb-3 group-hover:bg-sky-600 group-hover:text-white group-hover:scale-110 transition-all duration-300 shadow-sm">
+                            <i class="fa-solid fa-user-pen"></i>
                         </div>
-                        <h3 class="font-bold text-slate-800 text-base mb-1">ทดสอบแบบเดี่ยว</h3>
-                        <p class="text-xs text-slate-500">ฝึกฝนคำนวณและประเมินผลแบบรายบุคคล</p>
+                        <h3 class="font-bold text-base text-slate-800">ทดสอบแบบเดี่ยว</h3>
+                        <p class="text-xs text-slate-500 mt-1">สุ่มโจทย์ฝึกฝนรายบุคคล</p>
                     </button>
                 </div>
 
                 <div class="pt-6 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-2">
-                    <div><i class="fa-solid fa-circle-check text-emerald-500 mr-1"></i> รองรับการแสดงผล LaTeX ด้วย MathJax</div>
-                    <div>ออกแบบโดย <span class="font-semibold text-slate-700">ครูภานุพงศ์ แก้วบุญเรือง</span></div>
+                    <div>
+                        <i class="fa-solid fa-chalkboard-user mr-1.5 text-indigo-600"></i> ออกแบบการเรียนการสอนโดย: <span class="font-semibold text-slate-800">ครูภานุพงศ์ แก้วบุญเรือง</span>
+                    </div>
+                    <div>
+                        <i class="fa-solid fa-laptop-code mr-1.5 text-purple-600"></i> Interactive Math Web App (ม.2)
+                    </div>
                 </div>
             </div>
         </section>
 
-        <!-- SECTION: LEARN & VISUALIZER -->
-        <section id="learn" class="hidden fade-in space-y-6">
-            <div class="flex items-center justify-between flex-wrap gap-3 pb-2 border-b border-slate-200">
+        <!-- SECTION: LEARN -->
+        <section id="learn" class="hidden fade-in">
+            <div class="mb-6 flex items-center justify-between flex-wrap gap-3">
                 <div class="flex items-center gap-3">
-                    <button onclick="showSection('home')" class="bg-white p-2 rounded-xl shadow-sm hover:bg-slate-50 text-slate-600 border border-slate-200">
+                    <button onclick="showSection('home')"
+                        class="bg-white p-2.5 rounded-full shadow-sm hover:bg-slate-100 text-slate-600 focus:ring-2 focus:ring-indigo-500 transition">
                         <i class="fa-solid fa-arrow-left"></i>
                     </button>
                     <div>
-                        <h2 class="text-xl sm:text-2xl font-bold text-slate-900">บทเรียนและกราฟจำลอง (Interactive Theory)</h2>
-                        <p class="text-xs sm:text-sm text-slate-500">ทำความเข้าใจบทนิยาม สมบัติ และกราฟความสัมพันธ์ของรากที่สาม</p>
+                        <h2 class="text-xl sm:text-2xl font-bold text-slate-800">สรุปบทเรียน: รากที่สาม (Cube Root)</h2>
+                        <p class="text-xs sm:text-sm text-slate-500">บทนิยาม สมบัติ และตัวอย่างการคำนวณอย่างละเอียด</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Context Paragraph -->
-            <div class="bg-indigo-50/60 border border-indigo-100 rounded-2xl p-4 sm:p-5 text-slate-700 text-sm leading-relaxed">
-                <p>
-                    <strong>คำชี้แจงส่วนบทเรียน:</strong> ในส่วนนี้ผู้เรียนจะได้ศึกษานิยามทางคณิตศาสตร์ของรากที่สาม สมบัติเชิงบวกและลบ การประยุกต์ใช้กับทรงลูกบาศก์ พร้อมทั้งสามารถทดลองปรับค่าใน <strong>"เครื่องมือจำลองกราฟฟังก์ชัน $y = \sqrt[3]{x}$"</strong> เพื่อสังเกตลักษณะพฤติกรรมของรากที่สามเมื่อค่า $x$ เปลี่ยนแปลงไป รวมถึงดูขั้นตอนการแก้โจทย์ตัวอย่างอย่างเป็นระบบ
-                </p>
-            </div>
-
-            <!-- Mathematical Definition Card -->
-            <div class="glass-panel p-5 sm:p-7 rounded-2xl shadow-sm border-l-4 border-indigo-600 space-y-4">
-                <div class="flex items-center gap-2 text-indigo-700 font-bold text-lg">
-                    <i class="fa-solid fa-bookmark"></i>
-                    <h3>บทนิยามของรากที่สาม (Definition of Cube Root)</h3>
-                </div>
-                <p class="text-sm sm:text-base text-slate-700 leading-relaxed">
-                    ให้ $a$ แทนจำนวนจริงใดๆ <strong>รากที่สามของ $a$</strong> คือ จำนวนจริงที่ยกกำลังสามแล้วเท่ากับ $a$ เขียนแทนด้วยสัญลักษณ์ $\sqrt[3]{a}$
-                </p>
-                
-                <div class="bg-gradient-to-r from-indigo-900 to-slate-900 text-white p-4 sm:p-5 rounded-xl text-center shadow-inner">
-                    <div class="text-base sm:text-xl font-mono tracking-wide">
-                        $$ (\sqrt[3]{a})^3 = a \quad \text{และ} \quad \sqrt[3]{a^3} = a $$
-                    </div>
-                </div>
-
-                <!-- Properties Grid -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
-                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
-                        <div class="font-bold text-emerald-600 text-sm mb-1"><i class="fa-solid fa-plus-circle mr-1"></i>จำนวนจริงบวก</div>
-                        <p class="text-xs text-slate-600 mb-2">รากที่สามของจำนวนจริงบวก จะได้ผลลัพธ์เป็นจำนวนจริงบวกเสมอ</p>
-                        <div class="text-center font-semibold text-slate-800 text-sm bg-slate-50 p-2 rounded">$$ \sqrt[3]{27} = \sqrt[3]{3^3} = 3 $$</div>
-                    </div>
-
-                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
-                        <div class="font-bold text-rose-600 text-sm mb-1"><i class="fa-solid fa-minus-circle mr-1"></i>จำนวนจริงลบ</div>
-                        <p class="text-xs text-slate-600 mb-2">รากที่สามของจำนวนจริงลบ จะได้ผลลัพธ์เป็นจำนวนจริงลบเสมอ</p>
-                        <div class="text-center font-semibold text-slate-800 text-sm bg-slate-50 p-2 rounded">$$ \sqrt[3]{-27} = \sqrt[3]{(-3)^3} = -3 $$</div>
-                    </div>
-
-                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
-                        <div class="font-bold text-sky-600 text-sm mb-1"><i class="fa-solid fa-cube mr-1"></i>ทรงลูกบาศก์</div>
-                        <p class="text-xs text-slate-600 mb-2">หากปริมาตรลูกบาศก์เท่ากับ $V$ ความยาวด้าน $s$ หาได้จากรากที่สาม</p>
-                        <div class="text-center font-semibold text-slate-800 text-sm bg-slate-50 p-2 rounded">$$ s = \sqrt[3]{V} $$</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- INTERACTIVE CHART VISUALIZER -->
-            <div class="bg-white p-5 sm:p-7 rounded-2xl shadow-sm border border-slate-200 space-y-4">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
-                    <div>
-                        <h3 class="font-bold text-base sm:text-lg text-slate-900"><i class="fa-solid fa-chart-line text-indigo-600 mr-2"></i>เครื่องมือจำลองกราฟฟังก์ชัน $y = \sqrt[3]{x}$</h3>
-                        <p class="text-xs text-slate-500">เลื่อนสไลเดอร์เพื่อดูการเปลี่ยนแปลงของค่า $x$ และผลลัพธ์รากที่สาม $y$ บนเส้นโค้งกราฟ</p>
-                    </div>
-                    <div class="bg-indigo-50 px-3 py-1 rounded-lg text-xs font-mono font-semibold text-indigo-700 self-start sm:self-auto">
-                        Interactive Canvas
-                    </div>
-                </div>
-
-                <!-- Slider & Controls -->
-                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3">
-                    <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
-                        <div class="w-full sm:w-2/3">
-                            <label for="chart-x-slider" class="block text-xs font-semibold text-slate-700 mb-1">
-                                ปรับค่า $x$: <span id="slider-x-val" class="text-indigo-600 font-bold text-sm">64</span>
-                            </label>
-                            <input type="range" id="chart-x-slider" min="-125" max="125" value="64" step="1" 
-                                class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-indigo-600"
-                                oninput="updateInteractiveChart(this.value)">
-                        </div>
-                        <div class="w-full sm:w-1/3 bg-white p-3 rounded-lg border border-slate-200 text-center">
-                            <div class="text-xs text-slate-500">ผลลัพธ์คำนวณ</div>
-                            <div class="text-sm font-bold text-slate-800" id="chart-calc-output">
-                                $$\sqrt[3]{64} = 4.00$$
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Responsive Chart Container (MANDATORY REQUIREMENT) -->
-                <div class="chart-container">
-                    <canvas id="cubeRootChart"></canvas>
-                </div>
-            </div>
-
-            <!-- Solved Examples Studio -->
-            <div class="space-y-4 pt-4">
-                <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
-                    <i class="fa-solid fa-lightbulb text-amber-500"></i> ตัวอย่างโจทย์พร้อมแนวคิด (Solved Examples)
+            <!-- Concept Card -->
+            <div class="glass-panel p-5 sm:p-6 rounded-2xl shadow-sm mb-6 border-l-4 border-indigo-600">
+                <h3 class="text-lg sm:text-xl font-bold text-indigo-900 mb-3 flex items-center">
+                    <i class="fa-solid fa-lightbulb text-amber-500 mr-2.5"></i>บทนิยามและสมบัติสำคัญ
                 </h3>
+                <p class="text-sm sm:text-base text-slate-700 leading-relaxed mb-4">
+                    ให้ \(a\) เป็นจำนวนจริงใดๆ <strong>รากที่สามของ \(a\)</strong> คือ จำนวนจริงที่ยกกำลังสามแล้วได้เท่ากับ \(a\) เขียนแทนด้วยสัญลักษณ์ \( \sqrt[3]{a} \)
+                </p>
+                <div class="bg-indigo-50/80 p-4 rounded-xl border border-indigo-100 text-center my-3">
+                    <p class="text-slate-800 font-medium text-sm sm:text-base mb-1">สมการบทนิยามหลัก:</p>
+                    $$ (\sqrt[3]{a})^3 = a \quad \text{และ} \quad \sqrt[3]{a^3} = a $$
+                </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="examples-container">
-                    <!-- Dynamic Examples Injected by JS -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5 mt-4">
+                    <div class="bg-blue-50/80 p-4 rounded-xl border border-blue-100">
+                        <div class="font-bold text-sm text-blue-900 mb-1"><i class="fa-solid fa-plus-circle mr-1.5 text-blue-600"></i>จำนวนเต็มบวก</div>
+                        <p class="text-xs text-slate-600 mb-2">รากที่สามของจำนวนบวก จะได้ผลลัพธ์เป็นจำนวนบวกเสมอ</p>
+                        <div class="text-center font-semibold text-blue-800 text-sm">\( \sqrt[3]{8} = 2 \)</div>
+                    </div>
+                    <div class="bg-purple-50/80 p-4 rounded-xl border border-purple-100">
+                        <div class="font-bold text-sm text-purple-900 mb-1"><i class="fa-solid fa-minus-circle mr-1.5 text-purple-600"></i>จำนวนเต็มลบ</div>
+                        <p class="text-xs text-slate-600 mb-2">รากที่สามของจำนวนลบ จะได้ผลลัพธ์เป็นจำนวนลบเสมอ</p>
+                        <div class="text-center font-semibold text-purple-800 text-sm">\( \sqrt[3]{-27} = -3 \)</div>
+                    </div>
+                    <div class="bg-emerald-50/80 p-4 rounded-xl border border-emerald-100">
+                        <div class="font-bold text-sm text-emerald-900 mb-1"><i class="fa-solid fa-shapes mr-1.5 text-emerald-600"></i>สมบัติการคูณ/หาร</div>
+                        <p class="text-xs text-slate-600 mb-2">กระจายรากที่สามในการคูณและการหารได้</p>
+                        <div class="text-center font-semibold text-emerald-800 text-xs sm:text-sm">\( \sqrt[3]{a \cdot b} = \sqrt[3]{a} \cdot \sqrt[3]{b} \)</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Interactive Visualizer Widget: Cube Root Function -->
+            <div class="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-200 mb-8">
+                <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+                    <h3 class="font-bold text-base sm:text-lg text-slate-800 flex items-center">
+                        <i class="fa-solid fa-chart-line text-indigo-600 mr-2"></i> เครื่องมือจำลองกราฟฟังก์ชัน \( y = \sqrt[3]{x} \)
+                    </h3>
+                    <span class="text-xs bg-indigo-100 text-indigo-700 px-2.5 py-1 rounded-full font-medium">Interactive Graph</span>
+                </div>
+                <p class="text-xs sm:text-sm text-slate-600 mb-4">เลื่อนสไลเดอร์เพื่อดูการเปลี่ยนแปลงของค่า \(x\) และผลลัพธ์รากที่สาม \(y\) บนเส้นโค้งกราฟ</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+                    <div class="md:col-span-2 relative h-64 w-full bg-slate-50 p-2 rounded-xl border border-slate-100">
+                        <canvas id="cubeRootChart"></canvas>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-4">
+                        <div>
+                            <label for="xSlider" class="block text-xs font-semibold text-slate-600 mb-1">ปรับค่า \(x\): <span id="xSliderVal" class="text-indigo-600 font-bold text-base">27</span></label>
+                            <input type="range" id="xSlider" min="-64" max="64" value="27" step="1" class="w-full accent-indigo-600 cursor-pointer">
+                        </div>
+                        <div class="bg-white p-3 rounded-lg border border-slate-200 text-center">
+                            <p class="text-xs text-slate-500 mb-1">ผลลัพธ์รากที่สาม</p>
+                            <p class="text-lg font-bold text-indigo-700">\( \sqrt[3]{<span id="xValDisplay">27</span>} = <span id="yValDisplay">3.00</span> \)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Examples Section -->
+            <div class="space-y-4">
+                <h3 class="text-lg font-bold text-slate-800 ml-1">ตัวอย่างโจทย์และการแสดงวิธีทำ</h3>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6" id="examples-container">
+                    <!-- Injected by JS -->
                 </div>
             </div>
         </section>
 
         <!-- SECTION: GROUP QUIZ -->
-        <section id="group-quiz" class="hidden fade-in space-y-6">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200">
+        <section id="group-quiz" class="hidden fade-in">
+            <div class="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div class="flex items-center gap-3">
-                    <button onclick="showSection('home')" class="bg-white p-2 rounded-xl shadow-sm hover:bg-slate-50 text-slate-600 border border-slate-200">
+                    <button onclick="showSection('home')"
+                        class="bg-white p-2.5 rounded-full shadow-sm hover:bg-slate-100 text-slate-600 focus:ring-2 focus:ring-indigo-500 transition">
                         <i class="fa-solid fa-arrow-left"></i>
                     </button>
                     <div>
-                        <h2 class="text-xl sm:text-2xl font-bold text-slate-900">ทดสอบแบบกลุ่ม (Group Quiz Studio)</h2>
-                        <p class="text-xs sm:text-sm text-slate-500">โจทย์คำนวณสุ่มสถานการณ์ 4 กลุ่ม พร้อมตัวแปรสุ่ม $N$</p>
+                        <h2 class="text-xl sm:text-2xl font-bold text-slate-800">แบบทดสอบสุ่มแบบกลุ่ม (Group Quiz)</h2>
+                        <p class="text-xs sm:text-sm text-slate-500">โจทย์คำนวณรากที่สามสุ่ม 4 ชุดสำหรับกิจกรรมกลุ่ม</p>
                     </div>
                 </div>
-                <button onclick="setupGroupQuiz()" class="btn-hitech bg-indigo-600 text-white px-5 py-2.5 rounded-xl text-sm font-semibold shadow-md hover:bg-indigo-700">
-                    <i class="fa-solid fa-shuffle mr-1.5"></i> สุ่มโจทย์กลุ่มใหม่
+                <button onclick="setupGroupQuiz()"
+                    class="btn-hitech bg-indigo-600 text-white px-5 py-2.5 rounded-xl shadow-md hover:bg-indigo-700 active:scale-95 text-sm font-semibold transition focus:ring-2 focus:ring-indigo-300">
+                    <i class="fa-solid fa-shuffle mr-2"></i> สุ่มสถานการณ์ใหม่
                 </button>
             </div>
 
-            <div class="bg-purple-50/60 border border-purple-100 rounded-2xl p-4 sm:p-5 text-slate-700 text-sm leading-relaxed">
-                <p>
-                    <strong>คำชี้แจงกิจกรรมกลุ่ม:</strong> ให้สมาชิกในแต่ละกลุ่มนำผลรวมเลขที่ของสมาชิกในกลุ่มใส่ลงในช่อง <strong>"ตัวแปร N"</strong> ระบบจะทำการปรับแต่งโจทย์คำนวณรากที่สามโดยอัตโนมัติ ให้ร่วมกันคำนวณหาคำตอบ แล้วกดปุ่มตรวจคำตอบเพื่อดูผลลัพธ์และขั้นตอนวิธีคิด
-                </p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="group-quiz-container">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-6" id="group-quiz-container">
                 <!-- Group cards generated by JS -->
             </div>
         </section>
 
         <!-- SECTION: SOLO QUIZ -->
-        <section id="solo-quiz" class="hidden fade-in space-y-6">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200">
+        <section id="solo-quiz" class="hidden fade-in">
+            <div class="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div class="flex items-center gap-3">
-                    <button onclick="showSection('home')" class="bg-white p-2 rounded-xl shadow-sm hover:bg-slate-50 text-slate-600 border border-slate-200">
+                    <button onclick="showSection('home')"
+                        class="bg-white p-2.5 rounded-full shadow-sm hover:bg-slate-100 text-slate-600 focus:ring-2 focus:ring-sky-500 transition">
                         <i class="fa-solid fa-arrow-left"></i>
                     </button>
                     <div>
-                        <h2 class="text-xl sm:text-2xl font-bold text-slate-900">ทดสอบแบบเดี่ยว (Solo Practice)</h2>
-                        <p class="text-xs sm:text-sm text-slate-500">ฝึกฝนทักษะการคำนวณรากที่สามรายบุคคล</p>
+                        <h2 class="text-xl sm:text-2xl font-bold text-slate-800">แบบทดสอบรายบุคคล (Solo Quiz)</h2>
+                        <p class="text-xs sm:text-sm text-slate-500">ฝึกฝนคำนวณรากที่สามด้วยตนเอง</p>
                     </div>
                 </div>
-                <button onclick="setupSoloQuiz()" class="btn-hitech bg-sky-600 text-white px-5 py-2.5 rounded-xl text-sm font-semibold shadow-md hover:bg-sky-700">
-                    <i class="fa-solid fa-shuffle mr-1.5"></i> สุ่มโจทย์ใหม่
+                <button onclick="setupSoloQuiz()"
+                    class="btn-hitech bg-sky-600 text-white px-5 py-2.5 rounded-xl shadow-md hover:bg-sky-700 active:scale-95 text-sm font-semibold transition focus:ring-2 focus:ring-sky-300">
+                    <i class="fa-solid fa-shuffle mr-2"></i> สุ่มโจทย์ใหม่
                 </button>
-            </div>
-
-            <div class="bg-sky-50/60 border border-sky-100 rounded-2xl p-4 sm:p-5 text-slate-700 text-sm leading-relaxed">
-                <p>
-                    <strong>คำชี้แจงแบบทดสอบเดี่ยว:</strong> กรอกเลขที่นักเรียนของท่านในช่อง <strong>"ตัวแปร N"</strong> คำนวณหาคำตอบตามโจทย์ที่ปรากฏ จากนั้นตรวจสอบความถูกต้องพร้อมศึกษาแนวคิดวิธีทำ
-                </p>
             </div>
 
             <div class="max-w-2xl mx-auto" id="solo-quiz-container">
@@ -495,199 +491,285 @@
 
     </main>
 
-    <!-- Footer -->
-    <footer class="bg-white border-t border-slate-200 py-6 mt-12">
-        <div class="max-w-6xl mx-auto px-4 text-center text-xs text-slate-500 space-y-2">
-            <p class="font-medium text-slate-700">สื่อการเรียนรู้วิชาคณิตศาสตร์เรื่อง รากที่สาม (Cube Root) ชั้นมัธยมศึกษาปีที่ 2</p>
-            <p>ออกแบบและพัฒนาสำหรับการเรียนการสอนโดย <span class="text-indigo-600 font-semibold">ครูภานุพงศ์ แก้วบุญเรือง</span></p>
-        </div>
-    </footer>
-
-    <!-- JavaScript Application Logic -->
+    <!-- JS LOGIC -->
     <script>
         // --- MOBILE MENU LOGIC ---
         function toggleMobileMenu() {
             const menu = document.getElementById('mobile-menu');
-            if (menu) menu.classList.toggle('open');
+            menu.classList.toggle('open');
         }
 
-        // --- DATA & BASE SCENARIOS ---
+        // --- BASE QUIZ SCENARIOS (Grade 8 Math: Cube Roots) ---
         const scenariosBase = [
             {
-                id: 'cube_side_length',
-                type: 'การประยุกต์ปริมาตรลูกบาศก์',
-                title: 'หาความยาวด้านของลูกบาศก์',
-                desc: 'กล่องทรงลูกบาศก์ใบหนึ่งมีปริมาตรเท่ากับ $8 \\times [N]^3$ ลูกบาศก์เซนติเมตร จงหาความยาวด้านของกล่องใบนี้',
-                varUnit: 'ค่าตัวแปร N',
-                ansUnit: 'เซนติเมตร',
-                solve: (n) => 2 * n,
-                formula: '$$ s = \\sqrt[3]{V} = \\sqrt[3]{8 \\times N^3} = \\sqrt[3]{2^3 \\times N^3} = 2(N) $$'
-            },
-            {
-                id: 'negative_cube_root',
-                type: 'รากที่สามของจำนวนลบ',
-                title: 'การหารากที่สามติดลบ',
-                desc: 'จงคำนวณหาค่าของ $\\sqrt[3]{-125 \\times [N]^3}$',
-                varUnit: 'ค่าตัวแปร N',
-                ansUnit: '',
-                solve: (n) => -5 * n,
-                formula: '$$ \\sqrt[3]{-125 \\times N^3} = \\sqrt[3]{(-5)^3 \\times N^3} = -5(N) $$'
-            },
-            {
-                id: 'surface_area_cube',
-                type: 'การประยุกต์พื้นที่ผิวลูกบาศก์',
-                title: 'หาพื้นที่ผิวทั้งหมดของลูกบาศก์',
-                desc: 'ลูกบาศก์ลูกหนึ่งมีปริมาตร $27 \\times [N]^3$ ลูกบาศก์เซนติเมตร จงหาพื้นที่ผิวทั้งหมดของลูกบาศก์ลูกนี้',
-                varUnit: 'ค่าตัวแปร N',
-                ansUnit: 'ตารางเซนติเมตร',
-                solve: (n) => 54 * n * n,
-                formula: '$$ \\text{ด้าน } (s) = \\sqrt[3]{27N^3} = 3N $$ $$ \\text{พื้นที่ผิวทั้งหมด} = 6s^2 = 6(3N)^2 = 54(N)^2 $$'
-            },
-            {
-                id: 'decimal_cube_root',
-                type: 'รากที่สามของทศนิยม',
-                title: 'ถังน้ำทรงลูกบาศก์',
-                desc: 'ถังบรรจุน้ำทรงลูกบาศก์มีความจุเท่ากับ $0.001 \\times [N]^3$ ลูกบาศก์เมตร จงหาความยาวด้านของถังน้ำนี้',
-                varUnit: 'ค่าตัวแปร N',
+                id: 'cube_volume',
+                type: 'โจทย์ปัญหาปริมาตรลูกบาศก์',
+                title: 'การหาความยาวด้านจากปริมาตร',
+                desc: 'ถังบรรจุน้ำทรงลูกบาศก์มีความจุเท่ากับ \\( 0.001 \\times \\mathbf{[N]}^3 \\) ลูกบาศก์เมตร จงหาความยาวด้านของถังน้ำนี้',
+                varUnit: 'ค่า N',
                 ansUnit: 'เมตร',
-                solve: (n) => 0.1 * n,
-                formula: '$$ s = \\sqrt[3]{0.001 \\times N^3} = \\sqrt[3]{(0.1)^3 \\times N^3} = 0.1(N) $$'
+                solve: (n) => {
+                    // Volume = 0.001 * n^3 => Side = root3(0.001 * n^3) = 0.1 * n
+                    return 0.1 * n;
+                },
+                formula: `<div class="space-y-1">
+                            <p class="text-slate-700">จากสูตรความจุลูกบาศก์ \\( V = s^3 \\):</p>
+                            <div class="text-center my-2">$$ s = \\sqrt[3]{V} = \\sqrt[3]{0.001 \\times \\mathbf{[N]}^3} = 0.1 \\times \\mathbf{[N]} $$</div>
+                          </div>`
             },
             {
-                id: 'cube_root_equation',
+                id: 'negative_root',
+                type: 'รากที่สามของจำนวนลบ',
+                title: 'การหาค่ารากที่สามติดลบ',
+                desc: 'จงคำนวณหาค่าของ \\( \\sqrt[3]{-125 \\times \\mathbf{[N]}^3} \\)',
+                varUnit: 'ค่า N',
+                ansUnit: '',
+                solve: (n) => {
+                    // root3(-125 * n^3) = -5 * n
+                    return -5 * n;
+                },
+                formula: `<div class="space-y-1">
+                            <p class="text-slate-700">รากที่สามของจำนวนลบจะได้ค่าเป็นลบ:</p>
+                            <div class="text-center my-2">$$ \\sqrt[3]{-125 \\times \\mathbf{[N]}^3} = \\sqrt[3]{(-5)^3 \\times \\mathbf{[N]}^3} = -5 \\times \\mathbf{[N]} $$</div>
+                          </div>`
+            },
+            {
+                id: 'solve_equation',
                 type: 'การแก้สมการรากที่สาม',
-                title: 'หาค่าของตัวแปร x ในสมการ',
-                desc: 'กำหนดให้ $\\sqrt[3]{x} - [N] = 4$ จงคำนวณหาค่าของ $x$',
-                varUnit: 'ค่าตัวแปร N',
+                title: 'การแก้สมการตัวแปรติดราก',
+                desc: 'กำหนดให้ \\( \\sqrt[3]{x} - \\mathbf{[N]} = 4 \\) จงคำนวณหาค่าของ \\( x \\)',
+                varUnit: 'ค่า N',
                 ansUnit: '',
-                solve: (n) => Math.pow(n + 4, 3),
-                formula: '$$ \\sqrt[3]{x} = N + 4 \\Rightarrow x = (N + 4)^3 $$'
+                solve: (n) => {
+                    // root3(x) = 4 + n => x = (4 + n)^3
+                    return Math.pow(4 + n, 3);
+                },
+                formula: `<div class="space-y-1">
+                            <p class="text-slate-700">ย้ายข้างสมการและยกกำลังสามทั้งสองข้าง:</p>
+                            <div class="text-center my-2">$$ \\sqrt[3]{x} = 4 + \\mathbf{[N]} \\Rightarrow x = (4 + \\mathbf{[N]})^3 $$</div>
+                          </div>`
             },
             {
-                id: 'cube_root_addition',
-                type: 'การบวกลบเครื่องหมายรากที่สาม',
-                title: 'ผลบวกของรากที่สาม',
-                desc: 'จงคำนวณหาค่าของนิพจน์ $\\sqrt[3]{64 \\times [N]^3} + \\sqrt[3]{-27 \\times [N]^3}$',
-                varUnit: 'ค่าตัวแปร N',
-                ansUnit: '',
-                solve: (n) => n,
-                formula: '$$ \\sqrt[3]{64N^3} + \\sqrt[3]{-27N^3} = 4(N) + (-3(N)) = 1(N) $$'
-            },
-            {
-                id: 'cube_root_product',
+                id: 'multiply_roots',
                 type: 'การคูณของรากที่สาม',
-                title: 'ผลคูณของรากที่สาม',
-                desc: 'จงคำนวณหาค่าของ $\\sqrt[3]{2 \\times [N]} \\times \\sqrt[3]{4 \\times [N]^2}$',
-                varUnit: 'ค่าตัวแปร N',
+                title: 'สมบัติการคูณรากที่สาม',
+                desc: 'จงคำนวณหาค่าของ \\( \\sqrt[3]{2 \\times \\mathbf{[N]}} \\times \\sqrt[3]{4 \\times \\mathbf{[N]}^2} \\)',
+                varUnit: 'ค่า N',
                 ansUnit: '',
-                solve: (n) => 2 * n,
-                formula: '$$ \\sqrt[3]{2N \\times 4N^2} = \\sqrt[3]{8N^3} = 2(N) $$'
+                solve: (n) => {
+                    // root3(2n) * root3(4n^2) = root3(8n^3) = 2n
+                    return 2 * n;
+                },
+                formula: `<div class="space-y-1">
+                            <p class="text-slate-700">ใช้สมบัติการคูณของรากที่สาม \\( \\sqrt[3]{a} \\cdot \\sqrt[3]{b} = \\sqrt[3]{a \\cdot b} \\):</p>
+                            <div class="text-center my-2">$$ \\sqrt[3]{2\\mathbf{[N]}} \\times \\sqrt[3]{4\\mathbf{[N]}^2} = \\sqrt[3]{8\\mathbf{[N]}^3} = 2\\mathbf{[N]} $$</div>
+                          </div>`
             },
             {
-                id: 'fraction_cube_root',
+                id: 'fraction_root',
                 type: 'รากที่สามของเศษส่วน',
-                title: 'การหารากที่สามในรูปเศษส่วน',
-                desc: 'จงคำนวณหาค่าของ $\\sqrt[3]{\\frac{64 \\times [N]^3}{125}}$',
-                varUnit: 'ค่าตัวแปร N',
+                title: 'การหารากที่สามในเศษส่วน',
+                desc: 'จงคำนวณหาค่าของ \\( \\sqrt[3]{\\frac{64}{\\mathbf{[N]}^3}} \\)',
+                varUnit: 'ค่า N',
                 ansUnit: '',
-                solve: (n) => 0.8 * n,
-                formula: '$$ \\sqrt[3]{\\frac{64N^3}{125}} = \\frac{\\sqrt[3]{64N^3}}{\\sqrt[3]{125}} = \\frac{4(N)}{5} = 0.8(N) $$'
+                solve: (n) => {
+                    // root3(64 / n^3) = 4 / n
+                    return 4 / n;
+                },
+                formula: `<div class="space-y-1">
+                            <p class="text-slate-700">กระจายรากที่สามทั้งเศษและส่วน:</p>
+                            <div class="text-center my-2">$$ \\sqrt[3]{\\frac{64}{\\mathbf{[N]}^3}} = \\frac{\\sqrt[3]{64}}{\\sqrt[3]{\\mathbf{[N]}^3}} = \\frac{4}{\\mathbf{[N]}} $$</div>
+                          </div>`
+            },
+            {
+                id: 'sum_roots',
+                type: 'การบวกพจน์รากที่สาม',
+                title: 'ผลบวกพจน์ติดรากที่สาม',
+                desc: 'จงหาผลบวกของ \\( \\sqrt[3]{27 \\times \\mathbf{[N]}^3} + \\sqrt[3]{216} \\)',
+                varUnit: 'ค่า N',
+                ansUnit: '',
+                solve: (n) => {
+                    // root3(27n^3) + root3(216) = 3n + 6
+                    return (3 * n) + 6;
+                },
+                formula: `<div class="space-y-1">
+                            <p class="text-slate-700">ถอดรากที่สามทีละพจน์แล้วนำมาบวกกัน:</p>
+                            <div class="text-center my-2">$$ \\sqrt[3]{27\\mathbf{[N]}^3} + \\sqrt[3]{216} = 3\\mathbf{[N]} + 6 $$</div>
+                          </div>`
+            },
+            {
+                id: 'surface_area',
+                type: 'โจทย์ประยุกต์เรขาคณิต',
+                title: 'การหาพื้นที่ผิวของลูกบาศก์',
+                desc: 'ลูกบาศก์มีปริมาตร \\( 8 \\times \\mathbf{[N]}^3 \\) ลูกบาศก์หน่วย จงหาพื้นที่ผิวทั้งหมดของลูกบาศก์ลูกนี้',
+                varUnit: 'ค่า N',
+                ansUnit: 'ตารางหน่วย',
+                solve: (n) => {
+                    // Side s = root3(8n^3) = 2n. Total Surface Area A = 6 * s^2 = 6 * (2n)^2 = 24n^2
+                    return 24 * Math.pow(n, 2);
+                },
+                formula: `<div class="space-y-1">
+                            <p class="text-slate-700">1) หาความยาวด้าน \\( s = \\sqrt[3]{8\\mathbf{[N]}^3} = 2\\mathbf{[N]} \\)</p>
+                            <p class="text-slate-700">2) คำนวณพื้นที่ผิวจากสูตร \\( A = 6s^2 \\):</p>
+                            <div class="text-center my-2">$$ A = 6(2\\mathbf{[N]})^2 = 6(4\\mathbf{[N]}^2) = 24\\mathbf{[N]}^2 $$</div>
+                          </div>`
+            },
+            {
+                id: 'decimal_root',
+                type: 'รากที่สามของทศนิยม',
+                title: 'การถอดรากที่สามจำนวนทศนิยม',
+                desc: 'จงหาค่าของ \\( \\sqrt[3]{0.027 \\times \\mathbf{[N]}^3} \\)',
+                varUnit: 'ค่า N',
+                ansUnit: '',
+                solve: (n) => {
+                    // root3(0.027 * n^3) = 0.3 * n
+                    return 0.3 * n;
+                },
+                formula: `<div class="space-y-1">
+                            <p class="text-slate-700">ถอดรากที่สามของทศนิยม:</p>
+                            <div class="text-center my-2">$$ \\sqrt[3]{0.027 \\times \\mathbf{[N]}^3} = 0.3 \\times \\mathbf{[N]} $$</div>
+                          </div>`
             }
         ];
 
+        // --- LEARN SECTION EXAMPLES DATA ---
         const exampleData = [
             {
-                type: 'การหารากที่สามของจำนวนเต็มบวก',
-                title: 'การแยกตัวประกอบเพื่อหารากที่สาม',
-                q: 'จงหาค่าของ $\\sqrt[3]{216}$ โดยการแยกตัวประกอบ',
-                method: '$$ 216 = 2 \\times 2 \\times 2 \\times 3 \\times 3 \\times 3 = (2 \\times 3)^3 = 6^3 $$ $$ \\therefore \\sqrt[3]{216} = \\sqrt[3]{6^3} = 6 $$'
+                type: 'ความหมายและนิยาม',
+                title: 'การหารากที่สามของจำนวนเต็มบวก',
+                q: 'จงหาค่าของ \\( \\sqrt[3]{216} \\)',
+                method: `<div class="space-y-2">
+                            <p class="text-slate-700">จากนิยามรากที่สาม: \\( \\sqrt[3]{a} = b \\) หมายถึง \\( b^3 = a \\)</p>
+                            <p class="text-slate-700">เนื่องจาก \\( 6^3 = 6 \\times 6 \\times 6 = 216 \\)</p>
+                            <p class="font-semibold text-indigo-700">ดังนั้น \\( \\sqrt[3]{216} = 6 \\)</p>
+                         </div>`
             },
             {
-                type: 'การหารากที่สามของจำนวนติดลบ',
-                title: 'รากที่สามของจำนวนจริงลบ',
-                q: 'จงหาค่าของ $\\sqrt[3]{-343}$',
-                method: '$$ -343 = (-7) \\times (-7) \\times (-7) = (-7)^3 $$ $$ \\therefore \\sqrt[3]{-343} = \\sqrt[3]{(-7)^3} = -7 $$'
+                type: 'รากที่สามของจำนวนลบ',
+                title: 'การหารากที่สามของจำนวนเต็มลบ',
+                q: 'จงหาค่าของ \\( \\sqrt[3]{-64} \\)',
+                method: `<div class="space-y-2">
+                            <p class="text-slate-700">เนื่องจากจำนวนลบยกกำลังสามจะได้ผลลัพธ์เป็นจำนวนลบ:</p>
+                            <div class="text-center my-1">$$ (-4)^3 = (-4) \\times (-4) \\times (-4) = -64 $$</div>
+                            <p class="font-semibold text-indigo-700">ดังนั้น \\( \\sqrt[3]{-64} = -4 \\)</p>
+                         </div>`
             },
             {
                 type: 'การหารากที่สามของเศษส่วน',
                 title: 'การกระจายรากที่สามในเศษส่วน',
-                q: 'จงหาค่าของ $\\sqrt[3]{\\frac{27}{125}}$',
-                method: '$$ \\sqrt[3]{\\frac{27}{125}} = \\frac{\\sqrt[3]{27}}{\\sqrt[3]{125}} = \\frac{\\sqrt[3]{3^3}}{\\sqrt[3]{5^3}} = \\frac{3}{5} = 0.6 $$'
+                q: 'จงหาค่าของ \\( \\sqrt[3]{\\frac{27}{125}} \\)',
+                method: `<div class="space-y-2">
+                            <p class="text-slate-700">ใช้สมบัติการกระจายรากที่สามในเศษส่วน: \\( \\sqrt[3]{\\frac{a}{b}} = \\frac{\\sqrt[3]{a}}{\\sqrt[3]{b}} \\)</p>
+                            <div class="text-center my-2">$$ \\sqrt[3]{\\frac{27}{125}} = \\frac{\\sqrt[3]{27}}{\\sqrt[3]{125}} = \\frac{3}{5} $$</div>
+                            <p class="font-semibold text-indigo-700">ดังนั้น คำตอบคือ \\( \\frac{3}{5} \\)</p>
+                         </div>`
             },
             {
                 type: 'การหารากที่สามของทศนิยม',
                 title: 'ทศนิยมกับการหารากที่สาม',
-                q: 'จงหาค่าของ $\\sqrt[3]{0.008}$',
-                method: '$$ 0.008 = \\frac{8}{1000} = \\left(\\frac{2}{10}\\right)^3 = (0.2)^3 $$ $$ \\therefore \\sqrt[3]{0.008} = \\sqrt[3]{(0.2)^3} = 0.2 $$'
+                q: 'จงหาค่าของ \\( \\sqrt[3]{0.008} \\)',
+                method: `<div class="space-y-2">
+                            <p class="text-slate-700">แปลงทศนิยมเป็นเศษส่วน:</p>
+                            <div class="text-center my-2">$$ 0.008 = \\frac{8}{1000} $$</div>
+                            <p class="text-slate-700">ถอดรากที่สามทั้งเศษและส่วน:</p>
+                            <div class="text-center my-2">$$ \\sqrt[3]{0.008} = \\sqrt[3]{\\frac{8}{1000}} = \\frac{\\sqrt[3]{8}}{\\sqrt[3]{1000}} = \\frac{2}{10} = 0.2 $$</div>
+                            <p class="font-semibold text-indigo-700">ดังนั้น คำตอบคือ \\( 0.2 \\)</p>
+                         </div>`
             },
             {
                 type: 'โจทย์ปัญหาเรขาคณิต',
                 title: 'การประยุกต์หาความยาวด้านลูกบาศก์',
-                q: 'กล่องทรงลูกบาศก์มีความจุ $512$ ลูกบาศก์เซนติเมตร อยากทราบว่ากล่องใบนี้มีความยาวด้านละกี่เซนติเมตร',
-                method: '$$ \\text{จากสูตร ปริมาตรลูกบาศก์ } V = s^3 $$ $$ s = \\sqrt[3]{512} = \\sqrt[3]{8^3} = 8\\ \\text{เซนติเมตร} $$'
+                q: 'กล่องทรงลูกบาศก์มีความจุ 512 ลูกบาศก์เซนติเมตร อยากทราบว่ากล่องใบนี้มีความยาวด้านละกี่เซนติเมตร',
+                method: `<div class="space-y-2">
+                            <p class="text-slate-700">จากสูตร ปริมาตรลูกบาศก์ \\( V = s^3 \\)</p>
+                            <div class="text-center my-2">$$ s = \\sqrt[3]{512} = \\sqrt[3]{8^3} = 8 $$</div>
+                            <p class="font-semibold text-indigo-700">ดังนั้น ความยาวด้านเท่ากับ 8 เซนติเมตร</p>
+                         </div>`
             },
             {
                 type: 'การแก้สมการเกี่ยวกับรากที่สาม',
-                title: 'การแก้สมการ $\\sqrt[3]{x}$',
-                q: 'จงหาค่า $x$ จากสมการ $\\sqrt[3]{x} + 3 = 7$',
-                method: '$$ \\sqrt[3]{x} = 7 - 3 = 4 $$ $$ \\text{ยกกำลังสามทั้งสองข้าง: } (\\sqrt[3]{x})^3 = 4^3 \\Rightarrow x = 64 $$'
+                title: 'การแก้สมการ \\( \\sqrt[3]{x} \\)',
+                q: 'จงหาค่า \\( x \\) จากสมการ \\( \\sqrt[3]{x} + 3 = 7 \\)',
+                method: `<div class="space-y-2">
+                            <p class="text-slate-700">ย้ายข้างตัวเลขเพื่อแยกพจน์ติดราก:</p>
+                            <div class="text-center my-1">$$ \\sqrt[3]{x} = 7 - 3 = 4 $$</div>
+                            <p class="text-slate-700">ยกกำลังสามทั้งสองข้างของสมการ:</p>
+                            <div class="text-center my-1">$$ (\\sqrt[3]{x})^3 = 4^3 \\Rightarrow x = 64 $$</div>
+                            <p class="font-semibold text-indigo-700">ดังนั้น ค่าของ \\( x \\) คือ 64</p>
+                         </div>`
             }
         ];
 
-        // --- MATHJAX TYPESETTING UTILITY ---
+        // --- MATHJAX TYPESET UTILS ---
         function typesetMath(container = null) {
             if (window.MathJax && window.MathJax.typesetPromise) {
-                if (container) {
-                    const el = typeof container === 'string' ? document.getElementById(container) : container;
-                    if (el) {
-                        MathJax.typesetPromise([el]).catch((err) => console.warn('MathJax error:', err));
-                    }
-                } else {
-                    MathJax.typesetPromise().catch((err) => console.warn('MathJax error:', err));
-                }
+                const targets = container ? [container] : [document.body];
+                MathJax.typesetPromise(targets).catch((err) => {
+                    console.warn('MathJax rendering error:', err);
+                });
             }
         }
 
         // --- NAVIGATION ---
         function showSection(id) {
             document.querySelectorAll('section').forEach(sec => sec.classList.add('hidden'));
-            const sec = document.getElementById(id);
-            if (sec) sec.classList.remove('hidden');
+            document.getElementById(id).classList.remove('hidden');
             window.scrollTo(0, 0);
 
-            const mobileMenu = document.getElementById('mobile-menu');
-            if (mobileMenu) mobileMenu.classList.remove('open');
+            // Close mobile menu if open
+            document.getElementById('mobile-menu').classList.remove('open');
 
             if (id === 'learn') {
                 renderExamples();
                 initChart();
+            } else {
+                setTimeout(() => typesetMath(), 50);
             }
-            setTimeout(() => typesetMath(), 50);
         }
 
-        // --- EXAMPLES RENDER ---
+        // Toggle Example Solution
+        function toggleSolution(index) {
+            const solDiv = document.getElementById(`sol-${index}`);
+            const btn = document.getElementById(`btn-sol-${index}`);
+
+            if (solDiv.classList.contains('hidden')) {
+                solDiv.classList.remove('hidden');
+                solDiv.classList.add('fade-in');
+                btn.innerHTML = '<i class="fa-solid fa-eye-slash mr-2"></i>ซ่อนวิธีทำ';
+                btn.classList.replace('bg-indigo-100', 'bg-slate-200');
+                btn.classList.replace('text-indigo-700', 'text-slate-700');
+                typesetMath(solDiv);
+            } else {
+                solDiv.classList.add('hidden');
+                solDiv.classList.remove('fade-in');
+                btn.innerHTML = '<i class="fa-solid fa-eye mr-2"></i>แสดงวิธีทำ';
+                btn.classList.replace('bg-slate-200', 'bg-indigo-100');
+                btn.classList.replace('text-slate-700', 'text-indigo-700');
+            }
+        }
+
+        // --- RENDER LEARN EXAMPLES ---
         function renderExamples() {
             const container = document.getElementById('examples-container');
-            if (!container) return;
-
             container.innerHTML = exampleData.map((ex, idx) => `
-                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex flex-col justify-between">
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 hover:shadow-md transition flex flex-col justify-between">
                     <div>
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="bg-indigo-100 text-indigo-700 text-xs font-semibold px-2.5 py-1 rounded-full">${ex.type}</span>
-                            <span class="text-slate-400 text-xs font-mono">Ex ${idx + 1}</span>
+                        <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
+                            <span class="bg-indigo-100 text-indigo-700 text-xs font-bold px-3 py-1 rounded-full">${ex.type}</span>
+                            <span class="text-slate-400 text-xs font-semibold">Ex ${idx + 1}</span>
                         </div>
-                        <h4 class="font-bold text-slate-800 text-sm mb-2">${ex.title}</h4>
-                        <p class="text-slate-600 text-xs sm:text-sm mb-4 leading-relaxed">${ex.q}</p>
+                        <h4 class="font-bold text-base text-slate-800 mb-2">${ex.title}</h4>
+                        <div class="text-slate-600 text-sm mb-4 leading-relaxed">${ex.q}</div>
                     </div>
-
+                    
                     <div>
-                        <button id="btn-sol-${idx}" onclick="toggleSolution(${idx})" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 py-2 rounded-xl text-xs font-semibold transition">
-                            <i class="fa-solid fa-eye mr-1.5"></i> แสดงวิธีทำ
+                        <button id="btn-sol-${idx}" onclick="toggleSolution(${idx})" class="w-full bg-indigo-100 text-indigo-700 py-2.5 rounded-xl text-xs sm:text-sm font-bold hover:bg-indigo-200 transition mb-2">
+                            <i class="fa-solid fa-eye mr-2"></i>แสดงวิธีทำ
                         </button>
-                        <div id="sol-${idx}" class="hidden mt-3 bg-slate-50 p-3.5 rounded-xl border border-slate-200">
-                            <div class="text-xs text-slate-500 font-semibold mb-1">ขั้นตอนการแก้โจทย์:</div>
-                            <div class="text-slate-800 text-xs sm:text-sm">
+
+                        <div id="sol-${idx}" class="hidden bg-slate-50 p-4 rounded-xl border border-slate-200 transition-all duration-300">
+                            <p class="text-xs text-indigo-600 font-bold mb-2"><i class="fa-solid fa-list-check mr-1"></i>ขั้นตอนการแก้โจทย์:</p>
+                            <div class="text-slate-800 text-sm">
                                 ${ex.method}
                             </div>
                         </div>
@@ -698,166 +780,161 @@
             typesetMath(container);
         }
 
-        function toggleSolution(index) {
-            const solDiv = document.getElementById(`sol-${index}`);
-            const btn = document.getElementById(`btn-sol-${index}`);
-            if (solDiv.classList.contains('hidden')) {
-                solDiv.classList.remove('hidden');
-                btn.innerHTML = '<i class="fa-solid fa-eye-slash mr-1.5"></i> ซ่อนวิธีทำ';
-                typesetMath(solDiv);
-            } else {
-                solDiv.classList.add('hidden');
-                btn.innerHTML = '<i class="fa-solid fa-eye mr-1.5"></i> แสดงวิธีทำ';
-            }
-        }
-
-        // --- CHART.JS INTEGRATION (HTML5 Canvas) ---
+        // --- CHART.JS FUNCTION VISUALIZER ---
         let cubeChart = null;
-
         function initChart() {
-            const canvas = document.getElementById('cubeRootChart');
-            if (!canvas) return;
-
-            const ctx = canvas.getContext('2d');
-            
-            // Generate data points for y = root3(x)
-            const labels = [];
-            const dataPoints = [];
-            for (let x = -125; x <= 125; x += 5) {
-                labels.push(x);
-                dataPoints.push(Math.cbrt(x));
-            }
+            const ctx = document.getElementById('cubeRootChart');
+            if (!ctx) return;
 
             if (cubeChart) {
                 cubeChart.destroy();
             }
 
+            const xValues = [];
+            const yValues = [];
+            for (let x = -64; x <= 64; x += 2) {
+                xValues.push(x);
+                yValues.push(Math.cbrt(x));
+            }
+
             cubeChart = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'y = ∛x',
-                        data: dataPoints,
-                        borderColor: '#6366f1',
-                        backgroundColor: 'rgba(99, 102, 241, 0.1)',
-                        borderWidth: 2.5,
-                        fill: true,
-                        tension: 0.3,
-                        pointRadius: 2,
-                        pointHoverRadius: 6
-                    }]
+                    labels: xValues,
+                    datasets: [
+                        {
+                            label: 'y = ∛x',
+                            data: yValues,
+                            borderColor: '#6366f1',
+                            borderWidth: 2.5,
+                            fill: false,
+                            tension: 0.3,
+                            pointRadius: 0
+                        },
+                        {
+                            label: 'จุดปัจจุบัน',
+                            data: [{ x: 27, y: 3 }],
+                            backgroundColor: '#ef4444',
+                            borderColor: '#ffffff',
+                            borderWidth: 2,
+                            pointRadius: 6,
+                            showLine: false
+                        }
+                    ]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
-                        legend: {
-                            display: true,
-                            position: 'top'
-                        },
+                        legend: { display: false },
                         tooltip: {
                             callbacks: {
-                                label: function(context) {
-                                    const xVal = context.label;
-                                    const yVal = context.raw.toFixed(2);
-                                    return ` ∛(${xVal}) = ${yVal}`;
-                                }
+                                label: (ctx) => `x = ${ctx.parsed.x}, y = ${ctx.parsed.y.toFixed(2)}`
                             }
                         }
                     },
                     scales: {
                         x: {
-                            title: {
-                                display: true,
-                                text: 'ค่า x (Domain)'
-                            },
-                            grid: {
-                                color: 'rgba(226, 232, 240, 0.6)'
-                            }
+                            type: 'linear',
+                            position: 'bottom',
+                            grid: { color: '#e2e8f0' },
+                            title: { display: true, text: 'ค่า x', color: '#64748b' }
                         },
                         y: {
-                            title: {
-                                display: true,
-                                text: 'ค่า y = ∛x (Range)'
-                            },
-                            grid: {
-                                color: 'rgba(226, 232, 240, 0.6)'
-                            }
+                            grid: { color: '#e2e8f0' },
+                            title: { display: true, text: 'ค่า y = ∛x', color: '#64748b' }
                         }
                     }
                 }
             });
 
-            updateInteractiveChart(64);
+            const slider = document.getElementById('xSlider');
+            slider.addEventListener('input', (e) => {
+                const xVal = parseFloat(e.target.value);
+                const yVal = Math.cbrt(xVal);
+
+                document.getElementById('xSliderVal').innerText = xVal;
+                document.getElementById('xValDisplay').innerText = xVal;
+                document.getElementById('yValDisplay').innerText = yVal.toFixed(2);
+
+                if (cubeChart) {
+                    cubeChart.data.datasets[1].data = [{ x: xVal, y: yVal }];
+                    cubeChart.update('none');
+                }
+                typesetMath(document.getElementById('yValDisplay').parentNode);
+            });
         }
 
-        function updateInteractiveChart(xVal) {
-            const numX = parseFloat(xVal);
-            const cbrtVal = Math.cbrt(numX);
-
-            document.getElementById('slider-x-val').innerText = numX;
-            const outputEl = document.getElementById('chart-calc-output');
-            if (outputEl) {
-                outputEl.innerHTML = `$$\\sqrt[3]{${numX}} = ${cbrtVal.toFixed(2)}$$`;
-                typesetMath(outputEl);
-            }
-        }
-
-        // --- QUIZ GENERATION & STATE ---
-        let currentScenarios = {};
-
+        // --- QUIZ LOGIC ---
         function getRandomScenarios(count) {
             let shuffled = [...scenariosBase].sort(() => 0.5 - Math.random());
             return shuffled.slice(0, count);
         }
 
         function formatDesc(desc, nVal) {
-            if (nVal !== null && nVal !== undefined && nVal !== '' && !isNaN(nVal)) {
-                return desc.replace(/\[N\]/g, `\\mathbf{${nVal}}`);
-            }
-            return desc.replace(/\[N\]/g, '\\mathbf{N}');
+            if (!desc) return '';
+            let formatted = desc;
+            const hasVal = (nVal !== null && nVal !== undefined && nVal !== '');
+
+            // Replace \mathbf{[N]} in LaTeX safely with bold number/variable
+            const texRepl = hasVal ? `\\mathbf{${nVal}}` : `\\mathbf{N}`;
+            formatted = formatted.replace(/\\mathbf\{\[N\]\}/g, texRepl);
+
+            // Replace remaining [N] in plain HTML/text
+            const htmlRepl = hasVal
+                ? `<span class="text-indigo-600 font-bold text-base sm:text-lg underline decoration-dashed">${nVal}</span>`
+                : `<span class="text-indigo-500 font-bold">[N]</span>`;
+            formatted = formatted.replace(/\[N\]/g, htmlRepl);
+
+            return formatted;
         }
 
+        let currentScenarios = {};
+
         function createQuizCardHTML(scenario, index, isSolo = false) {
-            const cardId = isSolo ? 'solo-0' : `group-${index}`;
+            const cardId = isSolo ? `solo-0` : `group-${index}`;
             const title = isSolo ? 'แบบทดสอบรายบุคคล' : `กลุ่มที่ ${index + 1}`;
-            const inputLabel = isSolo ? 'กรอกเลขที่ของท่าน (N)' : 'กรอกผลรวมเลขที่สมาชิก (N)';
+            const inputLabel = isSolo ? 'กรอกเลขที่ของคุณ (N)' : 'กรอกผลรวมเลขที่สมาชิก (N)';
 
             return `
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden" id="card-${cardId}">
-                <div class="bg-gradient-to-r ${isSolo ? 'from-sky-600 to-indigo-600' : 'from-indigo-600 to-purple-600'} p-4 text-white flex justify-between items-center">
-                    <h3 class="font-bold text-base"><i class="fa-solid ${isSolo ? 'fa-user' : 'fa-users'} mr-2"></i>${title}</h3>
-                    <span class="text-xs bg-white/20 px-2.5 py-1 rounded-full font-mono">${scenario.type}</span>
+            <div class="bg-white rounded-2xl shadow-md border border-slate-200 overflow-hidden" id="card-${cardId}">
+                <div class="bg-gradient-to-r ${isSolo ? 'from-sky-600 to-indigo-600' : 'from-indigo-600 to-purple-600'} p-4 text-white flex justify-between items-center flex-wrap gap-2">
+                    <h3 class="font-bold text-base sm:text-lg flex items-center">
+                        <i class="fa-solid ${isSolo ? 'fa-user-pen' : 'fa-users'} mr-2"></i>${title}
+                    </h3>
+                    <span class="text-xs bg-white/20 px-2.5 py-1 rounded-full text-white font-medium">${scenario.type}</span>
                 </div>
                 
-                <div class="p-5 space-y-4">
-                    <div class="text-slate-700 text-sm leading-relaxed min-h-[60px]" id="desc-${cardId}">
+                <div class="p-5 sm:p-6">
+                    <div class="min-h-[60px] mb-4 text-slate-700 text-sm sm:text-base leading-relaxed bg-slate-50 p-4 rounded-xl border border-slate-100" id="desc-${cardId}">
                         ${formatDesc(scenario.desc, null)}
                     </div>
 
-                    <div class="space-y-3 pt-2">
+                    <div class="space-y-4">
+                        <!-- Input Variable N -->
                         <div>
-                            <label for="input-n-${cardId}" class="block text-xs font-semibold text-slate-500 mb-1">${inputLabel}</label>
-                            <input type="number" id="input-n-${cardId}" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition" placeholder="พิมพ์ตัวเลข N..." oninput="updateQuestionText('${cardId}', '${scenario.id}')">
+                            <label for="input-n-${cardId}" class="block text-xs font-semibold text-slate-600 mb-1">${inputLabel}</label>
+                            <input type="number" id="input-n-${cardId}" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-slate-800 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" placeholder="พิมพ์ตัวเลข N..." oninput="updateQuestionText('${cardId}')" onkeypress="if(event.key==='Enter') document.getElementById('input-ans-${cardId}').focus()">
                         </div>
 
+                        <!-- Input Answer -->
                         <div>
-                            <label for="input-ans-${cardId}" class="block text-xs font-semibold text-slate-500 mb-1">คำตอบที่คำนวณได้ ${scenario.ansUnit ? '(' + scenario.ansUnit + ')' : ''}</label>
-                            <input type="number" id="input-ans-${cardId}" step="0.01" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 transition" placeholder="พิมพ์ตัวเลขคำตอบ...">
+                            <label for="input-ans-${cardId}" class="block text-xs font-semibold text-slate-600 mb-1">คำตอบที่คำนวณได้ ${scenario.ansUnit ? `(${scenario.ansUnit})` : ''}</label>
+                            <input type="number" id="input-ans-${cardId}" step="0.01" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-slate-800 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition" placeholder="พิมพ์ตัวเลขคำตอบ..." onkeypress="if(event.key==='Enter') checkAnswer('${cardId}', '${scenario.id}')">
                         </div>
 
-                        <div class="flex gap-2 pt-1">
-                            <button onclick="checkAnswer('${cardId}', '${scenario.id}')" class="flex-1 bg-slate-900 text-white py-2.5 rounded-xl text-sm font-semibold hover:bg-slate-800 transition shadow-sm">
-                                <i class="fa-solid fa-check mr-1.5"></i> ตรวจคำตอบ
+                        <div class="flex gap-2.5 pt-1">
+                            <button onclick="checkAnswer('${cardId}', '${scenario.id}')" class="flex-1 bg-slate-900 text-white py-2.5 rounded-xl font-semibold hover:bg-slate-800 active:scale-95 transition shadow-sm text-sm sm:text-base focus:ring-2 focus:ring-slate-400">
+                                <i class="fa-solid fa-check mr-2"></i>ตรวจคำตอบ
                             </button>
-                            <button onclick="clearQuizCard('${cardId}')" class="bg-slate-100 text-slate-600 px-4 py-2.5 rounded-xl text-sm font-semibold hover:bg-slate-200 transition">
+                            <button onclick="clearQuizCard('${cardId}')" class="bg-slate-100 text-slate-600 px-4 py-2.5 rounded-xl font-medium hover:bg-slate-200 active:scale-95 transition text-sm sm:text-base focus:ring-2 focus:ring-slate-300" title="ล้างข้อมูล">
                                 <i class="fa-solid fa-rotate-left"></i>
                             </button>
                         </div>
                     </div>
 
-                    <div id="result-${cardId}" class="hidden pt-3 border-t border-slate-100"></div>
+                    <!-- Result Area -->
+                    <div id="result-${cardId}" class="hidden mt-4 pt-4 border-t border-slate-100"></div>
                 </div>
             </div>
             `;
@@ -866,7 +943,6 @@
         function setupGroupQuiz() {
             showSection('group-quiz');
             const container = document.getElementById('group-quiz-container');
-            if (!container) return;
             container.innerHTML = '';
             currentScenarios = {};
 
@@ -876,13 +952,12 @@
                 currentScenarios[key] = sc;
                 container.innerHTML += createQuizCardHTML(sc, idx, false);
             });
-            setTimeout(() => typesetMath(container), 50);
+            typesetMath(container);
         }
 
         function setupSoloQuiz() {
             showSection('solo-quiz');
             const container = document.getElementById('solo-quiz-container');
-            if (!container) return;
             container.innerHTML = '';
             currentScenarios = {};
 
@@ -890,12 +965,13 @@
             const key = `solo-0`;
             currentScenarios[key] = sc;
             container.innerHTML = createQuizCardHTML(sc, 0, true);
-            setTimeout(() => typesetMath(container), 50);
+            typesetMath(container);
         }
 
-        function updateQuestionText(cardId, scenarioId) {
+        function updateQuestionText(cardId) {
             const val = document.getElementById(`input-n-${cardId}`).value;
             const scenario = currentScenarios[cardId];
+
             if (scenario) {
                 const descEl = document.getElementById(`desc-${cardId}`);
                 descEl.innerHTML = formatDesc(scenario.desc, val);
@@ -917,6 +993,8 @@
             const resultDiv = document.getElementById(`result-${cardId}`);
             resultDiv.classList.add('hidden');
             resultDiv.innerHTML = '';
+
+            document.getElementById(`input-n-${cardId}`).focus();
         }
 
         function checkAnswer(cardId, scenarioId) {
@@ -927,14 +1005,16 @@
             const cardElement = document.getElementById(`card-${cardId}`);
 
             if (isNaN(nVal) || isNaN(userAns)) {
-                alert("กรุณากรอกตัวเลขค่า N และคำตอบให้ครบถ้วนก่อนกดตรวจคำตอบ");
+                alert("กรุณากรอกตัวเลขทั้งค่า N และคำตอบให้ครบถ้วนครับ");
                 return;
             }
 
+            // Calculate Correct Answer
             const correctAns = scenario.solve(nVal);
             const diff = Math.abs(correctAns - userAns);
-            const isCorrect = diff <= 0.05;
+            const isCorrect = diff <= 0.05; // Lenient rounding margin
 
+            // Animation Feedback
             if (isCorrect) {
                 cardElement.classList.add('result-correct');
                 setTimeout(() => cardElement.classList.remove('result-correct'), 600);
@@ -943,41 +1023,48 @@
                 setTimeout(() => cardElement.classList.remove('result-incorrect'), 500);
             }
 
-            let html = '';
+            let resultHTML = '';
             if (isCorrect) {
-                html = `
-                    <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-4 text-center space-y-1">
-                        <i class="fa-solid fa-circle-check text-emerald-500 text-3xl"></i>
-                        <h4 class="text-emerald-800 font-bold text-base">ถูกต้อง! เก่งมากครับ</h4>
-                        <p class="text-xs text-emerald-600">คำตอบที่ถูกต้องคือ <strong>${correctAns.toFixed(2).replace(/\.00$/, '')}</strong></p>
+                resultHTML = `
+                    <div class="bg-emerald-50 border-2 border-emerald-300 rounded-xl p-4 text-center shadow-sm">
+                        <i class="fa-solid fa-circle-check text-emerald-500 text-3xl mb-1"></i>
+                        <h4 class="text-emerald-800 font-bold text-base mb-1">🎉 ถูกต้อง! เก่งมากครับ 🎉</h4>
+                        <p class="text-xs sm:text-sm text-emerald-700">คำตอบที่ถูกต้องคือ <strong class="text-base">${correctAns.toFixed(2)}</strong> ${scenario.ansUnit}</p>
                     </div>
                 `;
             } else {
-                html = `
-                    <div class="bg-rose-50 border border-rose-200 rounded-xl p-4 text-center space-y-1">
-                        <i class="fa-solid fa-circle-xmark text-rose-500 text-3xl"></i>
-                        <h4 class="text-rose-800 font-bold text-base">ยังไม่ถูกต้อง ลองทบทวนอีกครั้งนะ</h4>
-                        <p class="text-xs text-rose-600">คำตอบที่ถูกต้องคือ <strong>${correctAns.toFixed(2).replace(/\.00$/, '')}</strong> (คำตอบของคุณ: ${userAns})</p>
+                resultHTML = `
+                    <div class="bg-rose-50 border-2 border-rose-300 rounded-xl p-4 text-center shadow-sm">
+                        <i class="fa-solid fa-circle-xmark text-rose-500 text-3xl mb-1"></i>
+                        <h4 class="text-rose-800 font-bold text-base mb-1">❌ ยังไม่ถูกต้อง ลองทบทวนอีกครั้งนะครับ</h4>
+                        <p class="text-xs sm:text-sm text-rose-700">คำตอบของคุณ: <strong>${userAns.toFixed(2)}</strong> | คำตอบที่ถูกคือ <strong class="text-base">${correctAns.toFixed(2)}</strong> ${scenario.ansUnit}</p>
                     </div>
                 `;
             }
 
-            html += `
-                <div class="mt-3 bg-slate-50 p-4 rounded-xl border border-slate-200 text-left text-xs space-y-2">
-                    <p class="font-bold text-slate-700"><i class="fa-solid fa-calculator text-indigo-500 mr-1"></i> ขั้นตอนการคำนวณแทนค่า N = ${nVal}:</p>
-                    <div class="text-slate-900 bg-white p-3 rounded-lg border border-slate-200 text-center text-sm font-mono overflow-x-auto">
-                        ${scenario.formula}
+            // Solution Step Display
+            const formattedFormula = formatDesc(scenario.formula, nVal);
+            resultHTML += `
+                <div class="mt-3 bg-slate-50 p-4 rounded-xl border border-slate-200 text-left text-xs sm:text-sm">
+                    <p class="font-bold text-slate-700 mb-2"><i class="fa-solid fa-calculator text-indigo-600 mr-1.5"></i>เฉลยวิธีทำ (แทนค่า N = ${nVal}):</p>
+                    <div class="text-slate-800 bg-white p-3.5 rounded-lg border border-slate-200 my-2">
+                        ${formattedFormula}
                     </div>
-                    <p class="text-center text-slate-600">ได้ผลลัพธ์สุดท้าย = <strong class="text-indigo-600 font-bold text-sm">${correctAns.toFixed(2).replace(/\.00$/, '')}</strong> ${scenario.ansUnit}</p>
+                    <p class="text-slate-600 text-center text-xs sm:text-sm mt-2">ผลลัพธ์สุดท้าย ≈ <strong class="text-indigo-600 font-bold text-base">${correctAns.toFixed(2)}</strong> ${scenario.ansUnit}</p>
                 </div>
             `;
 
-            resultDiv.innerHTML = html;
+            resultDiv.innerHTML = resultHTML;
             resultDiv.classList.remove('hidden');
+
+            setTimeout(() => {
+                resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 100);
+
             typesetMath(resultDiv);
         }
 
-        // --- INITIALIZATION ---
+        // Initialize App on DOM Loaded
         document.addEventListener('DOMContentLoaded', () => {
             typesetMath();
         });
