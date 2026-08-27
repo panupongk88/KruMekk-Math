@@ -76,24 +76,12 @@
             50% { filter: drop-shadow(0 0 25px rgba(168, 85, 247, 0.7)); }
         }
 
-        @keyframes bounceWiggle {
-            0%, 100% { transform: scale(1) rotate(0deg); }
-            20% { transform: scale(1.1) rotate(-5deg); }
-            40% { transform: scale(1.1) rotate(5deg); }
-            60% { transform: scale(1.05) rotate(-3deg); }
-            80% { transform: scale(1.05) rotate(3deg); }
-        }
-
         .animate-float {
             animation: floatCute 4s ease-in-out infinite;
         }
 
         .animate-float-delayed {
             animation: floatCute 5s ease-in-out 1.5s infinite;
-        }
-
-        .animate-pulse-glow {
-            animation: pulseGlow 3s infinite;
         }
 
         /* Cute Card Style */
@@ -263,25 +251,17 @@
                 <!-- Cute Mascot Banner -->
                 <div class="flex justify-center mb-4">
                     <div class="relative inline-block animate-float">
-                        <!-- Custom Cute Animated SVG Cartoon Character -->
                         <svg width="120" height="120" viewBox="0 0 100 100" class="drop-shadow-lg">
                             <rect x="15" y="15" width="70" height="70" rx="20" fill="#38bdf8" stroke="#0284c7" stroke-width="4"/>
-                            <!-- Inner Glow -->
                             <rect x="22" y="22" width="56" height="56" rx="14" fill="#7dd3fc"/>
-                            <!-- Cute Eyes -->
                             <circle cx="38" cy="45" r="7" fill="#0f172a"/>
                             <circle cx="62" cy="45" r="7" fill="#0f172a"/>
                             <circle cx="40" cy="43" r="2.5" fill="#ffffff"/>
                             <circle cx="64" cy="43" r="2.5" fill="#ffffff"/>
-                            <!-- Blush -->
                             <ellipse cx="30" cy="54" rx="5" ry="3" fill="#f43f5e" opacity="0.6"/>
                             <ellipse cx="70" cy="54" rx="5" ry="3" fill="#f43f5e" opacity="0.6"/>
-                            <!-- Smile Mouth -->
                             <path d="M 42 56 Q 50 66 58 56" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round"/>
-                            <!-- Cube Root Symbol on Head -->
-                            <bg opacity="0.9">
-                                <text x="50" y="28" font-size="14" font-weight="bold" fill="#0369a1" text-anchor="middle">∛x</text>
-                            </bg>
+                            <text x="50" y="28" font-size="14" font-weight="bold" fill="#0369a1" text-anchor="middle">∛x</text>
                         </svg>
                         <span class="absolute -top-2 -right-2 text-2xl animate-spin" style="animation-duration: 8s;">✨</span>
                         <span class="absolute -bottom-2 -left-2 text-2xl">💖</span>
@@ -409,9 +389,16 @@
                             <label for="xSlider" class="block text-xs font-bold text-sky-900 mb-1">ปรับค่า \(x\): <span id="xSliderVal" class="text-pink-600 font-extrabold text-lg">27</span></label>
                             <input type="range" id="xSlider" min="-64" max="64" value="27" step="1" class="w-full accent-pink-500 cursor-pointer">
                         </div>
+                        
+                        <!-- Smooth HTML Math Display Box (No MathJax Glitch) -->
                         <div class="bg-white p-4 rounded-xl border-2 border-sky-200 text-center shadow-sm">
                             <p class="text-xs text-slate-500 font-bold mb-1">ผลลัพธ์รากที่สาม</p>
-                            <p class="text-xl font-bold text-purple-700">\( \sqrt[3]{<span id="xValDisplay">27</span>} = <span id="yValDisplay">3.00</span> \)</p>
+                            <div class="text-2xl font-bold text-purple-700 flex items-center justify-center gap-1">
+                                <span class="text-pink-600 font-extrabold text-3xl font-cute leading-none">∛</span>
+                                <span>(<span id="xValDisplay" class="text-pink-600 font-bold">27</span>)</span>
+                                <span class="mx-1 text-slate-400">=</span>
+                                <span id="yValDisplay" class="text-sky-600 font-extrabold">3.00</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -815,7 +802,6 @@
                     cubeChart.data.datasets[1].data = [{ x: xVal, y: yVal }];
                     cubeChart.update('none');
                 }
-                typesetMath(document.getElementById('yValDisplay').parentNode);
             });
         }
 
